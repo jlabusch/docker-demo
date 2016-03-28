@@ -6,7 +6,7 @@ WORKDIR /opt/app
 
 COPY . /opt/app
 
-RUN cd /opt/app && npm install && chown -R demo:demo /opt/app
+RUN cd /opt/app && npm install --save pg && chown -R demo:demo /opt/app
 
 USER demo
 

@@ -11,9 +11,18 @@ services:
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
 
+    postgres:
+        image: postgres:9.4
+        expose:
+            - "5132"
+        volumes:
+            - ./db:/docker-entrypoint-initdb.d:ro
+
     app:
         image: docker-demo/app
         build: ./app
+        links:
+            - postgres
         expose:
             - "8000"
         environment:
