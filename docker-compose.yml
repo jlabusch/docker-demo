@@ -1,0 +1,21 @@
+version: "2"
+
+services:
+
+    haproxy:
+        image: dockercloud/haproxy:1.2.1
+        links:
+            - app
+        ports:
+            - "8000:80"
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+
+    app:
+        image: docker-demo/app
+        build: ./app
+        expose:
+            - "8000"
+        environment:
+            VIRTUAL_HOST: "shark.horse"
+
