@@ -1,3 +1,7 @@
+// "Hello HTTP" from https://howtonode.org/hello-node
+// "Client instance" from https://github.com/brianc/node-postgres
+
+
 // Load the http module to create an http server.
 var http = require('http');
 
