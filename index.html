@@ -4,7 +4,7 @@
     <head>
         <meta charset="utf-8">
 
-        <title>Working with distributed teams</title>
+        <title>Docker done small</title>
 
         <meta name="author" content="Jacques Labuschagne">
 
@@ -58,247 +58,63 @@
             <div class="slides">
                 <!-- Cover slide -->
                 <section>
-                    <h1 class="catalyst-logo">Catalyst</h1>
-                    <h3>Scaling Docker for small sites</h3>
-                    <p class="small-text">
-                        Presented by Jacques Labuschagne
-                    </p>
+                    <table>
+                    <tr>
+                        <td style="vertical-align:bottom;text-align:right;">
+                            <h1 style="">Small websites</h1>
+                        </td><td style="vertical-align:bottom;">
+                            <h2 style="color:#24b8eb;">and the 10 minute Docker demo</h2>
+                        </td>
+                    </tr>
+                    </table>
+                    <h3 style="margin-top: 10%;" class="catalyst-logo">Catalyst</h3>
                 </section>
 
-                    <section>
-                        <h3>What is "small"?</h3>
-                        <p>
-                            <ul>
-                                <li>Not every site needs to be "web scale"</li>
-                                <li></li>
-                            </ul>
-                        </p>
-                        <aside class="notes">
-                        "talking points" = things to think about, not all apply to us.
-                        </aside>
-                    </section>
-
-                    <section>
-                        <h3>Relevant case studies</h3>
-                        <p>
-                            <ul>
-                                <li>Fairfax</li>
-                                <li>NZ Post</li>
-                                <li>Radio NZ</li>
-                            </ul>
-                        </p>
-                    </section>
-
-                 <!--
-                    <section>
-                        <h3>Process</h3>
-                        <p>Standard iterative methods</p>
-                        <p>
-                        Plan &rarr; Do &rarr; <span class="remote">Check</span> &rarr; <span class="local">Act</span>
-                        </p>
-                    </section>
-
-                    <section>
-                        <h3>What to check</h3>
-                        <p>Direction</p>
-                        <p>Competence</p>
-                        <p>Satisfaction</p>
-                        <aside class="notes">
-                            direction: know what to do
-                            competence: know how to do it
-                            satisfaction: regular feedback
-                            context: wider project state
-                        </aside>
-                    </section>
-
-                    <section>
-                        <h3>Acting to correct problems</h3>
-                        <p>It's <em><sup><span style="font-size:0.6em;opacity:0.4;">(almost)</span></sup></em> always a communication problem.</p>
-                        <aside class="notes">
-                            The only problems unique to remote workers are communication problems.
-                        </aside>
-                    </section>
-                   -->
-                    <section>
-                        <h3>Hive Mind metaphor</h3>
-                        <p>
-                        The hive mind is shared knowledge, traditions, consensus.
-                        </p><p>
-                        The hive mind is connected by all forms of communication &mdash;
-                        conversation, email, IRC, documentation, &hellip;
-                        </p>
-                        <aside class="notes">
-                        Consensus regarding best practices.
-                        </aside>
-                    </section>
-
-                    <section>
-                        <h3>Path of least resistance</h3>
-                        <p>
-                        People will communicate in the most convenient way.
-                        </p><p>
-                        Put them together in the same office and they'll
-                        default to spoken conversation, cutting out remote members.
-                        </p>
-                    </section>
-
-                    <section>
-                        <h3>Manage the communication</h3>
-                        <p>
-                        Divert communication back along shared channels so that
-                        remote workers are not at a disadvantage.
-                        </p>
-                        <aside class="notes">
-                        Nonverbal channels are efficient enough. NZRS proved that.
-                        </aside>
-                    </section>
-
-                    <section>
-                        <h3>Some examples</h3>
-                        <p>
-                        </p>
-                    </section>
-
-                    <section>
-                        <h3>#octopost seating</h3>
-                        <p>
-                        Decided not to co-locate the Wellington team members.
-                        </p>
-                        <aside class="notes">
-                            Tried L9+L4 together, AKL got left out.
-                            No need to have tech lead + PM together.
-                        </aside>
-                    </section>
-
-                    <section>
-                        <h3>Standups</h3>
-                        <p>
-                        Much easier for the locals, so stress phone conf etiquette.
-                        <br/>Maybe try having <em>everyone</em> join by phone one day.
-                        </p><p>
-                        You need online tools &mdash; physical post-it notes are no good.
-                        </p>
-                    </section>
-                    
-                    <section>
-                        <h3>Broadcast by default</h3>
-                        <p>
-                            Set up a mail alias for the team and CC it on everything.
-                        </p><p>
-                            Don't answer questions in person; update the wiki.
-                        </p><p>
-                        <em>&ldquo;Work noisy&rdquo;</em>
-                        </p>
-                        <aside class="notes">
-                            Credit to Russel.
-                            Doesn't scale? Try an "announce" list.
-                            Obv. there are exceptions to trivial questions.
-                        </aside>
-                    </section>
-
-                    <section>
-                        <h3>The kickoff meeting</h3>
-                        <p>
-                        It's always easier to disrupt things at the start.
-                        </p>
-                    </section>
-
-                    <section>
-                        <h3>Tech lead shouldn't write code</h3>
-                        <p>
-                            If they have time to code, sound the alarm&hellip;<br/>
-                            Should focus on policies, architecture, reviews, etc.<br/>
-                        </p><p>
-                            Team's interpretation of that output &rarr; QA for the Hive Mind.
-                        </p>
-                        <p class="small-text">
-                        <em>* YMMV, might not make sense for small (1-2 dev) teams.</em>
-                        </p>
-                    </section>
-
-                    <section>
-                        <h3>Common problems</h3>
-                        <aside class="notes">
-                        Things mentioned in other research.
-                        How it relates to Catalyst.
-                        </aside>
-                    </section>
-
-                    <section>
-                        <h3>Slow decision making</h3>
-                        <p>
+                <section data-background="img/large_v-dark-trans.png" data-background-size="auto 75%">
+                    <aside class="notes">
                         <ul>
-                            <li>Remote people waiting for a decision from HQ is bad</li>
-                            <li>Timezones only make this worse</li>
+                          <li>virtualized hardware: good for compatibility, shit for performance.</li>
+                          <li>virtualized OS: more restrictive of compatibility, great for performance.</li>
                         </ul>
-                        </p>
-                        <p class="small-text">
-                        Workarounds: Set guidelines that empower. Make corrections after the fact.
-                        </p>
-                    </section>
-
-                    <section>
-                        <h3>No easy fix for time zones</h3>
+                        System calls get passed through from the guest to the host with very little
+                        interference, while still maintaining good isolation (processes, networks, etc).
                         <p>
-                        A difference of more than half a day is a problem.
-                        </p>
-                        <p class="small-text">
-                        Workarounds: Minimize contention &mdash; try to keep story tasks within one TZ.<br/>
-                        Maximize overlap &mdash; in extreme cases this could mean shifting working hours.
-                        </p>
-                        <p class="fragment roll-in">
-                        Holy grail: making timezones work for you &mdash; having issues fixed over night
-                        for QA to pick up in the morning.
-                        </p>
-                    </section>
+                        (More about deployments, tar vs apt etc)
+                    </aside>
+                </section>
 
-                    <section>
-                        <h3>Building trust is harder</h3>
-                        <p>
-                        Potential factors:
-                        </p>
-                        <ul>
-                            <li>Team members haven't met in person</li>
-                            <li>Different cultural backgrounds</li>
-                            <li>Seconded from another team; this isn't their day job</li>
-                            <li>Subcontracted from an entirely different company</li>
-                        </ul>
-                        <p class="small-text">
-                        Workarounds: Boot Camp vs. Rotating Guru/Ambassador patterns.<br/>
-                        People should be chatty on IRC, esp. early on.
-                        </p>
-                    </section>
+                <section>
+                    <h2 style="">What is</h2>
+                    <h1 style="color:#24b8eb;">small?</h1>
+                </section>
 
-                    <section>
-                        <h3>Relies on maturity</h3>
-                        <p>
-                        Team members need to take responsibility for their participation &mdash;
-                        even more important for remote work.
-                        </p>
-                        <p class="small-text">Workarounds: Guidance, cajoling, careful team selection, trial periods.</p>
-                    </section>
+                <section>
+                    <h3>1&mdash;2 <span style="color:#24b8eb;">apps</span> <span style="color:#666;">(plus cron jobs)</span></h3>
+                    <h3>housed on 1 <span style="color:#24b8eb;">server</span> <span style="color:#666;">(or 1+1)</span></h3>
+                    <h3>with a local <span style="color:#24b8eb;">database</span>.</h3>
+                </section>
 
-                    <section>
-                        <h3>When the cat's away...</h3>
-                        <p>
-                        What if my remote dev's office mates keep interrupting with &ldquo;15 minute&rdquo;
-                        queries?
-                        </p>
-                        <p class="small-text">Workarounds: negotiate 4-8hr chunks where that isn't allowed.</p>
-                    </section>
+                <section>
+                    <table>
+                    <tr>
+                        <td style="vertical-align:bottom;text-align:center;">
+                            <h2 style="">So<br/>what's<br/>the</h2>
+                        </td><td style="vertical-align:middle;">
+                            <h1 style="color:#24b8eb;">demo?</h1>
+                        </td>
+                    </tr>
+                    </table>
+                </section>
 
-                    <section>
-                        <h3>Location problems &ne; scalability problems</h3>
-                        <p>
-                        Distributed teams are more likely to also be <em>large</em> teams,
-                        and large teams have their own set of problems.
-                        </p>
-                        <p class="small-text">See also: Standups vs. Scrum of Scrums, dedicated sub-teams with improved autonomy.</p>
-                    </section>
+                <section data-background="img/target-arch.svg" data-background-size="auto 55%">
+                </section>
 
-                <!-- Section title slide with big colour dot -->
-                <section class="title-slide">
-                    <h2 class="orange">Any questions?</h2>
+                <section>
+                    <span><h1 id="timer"></h1></span>
+                </section>
+
+                <section data-transition="none">
+                    <span><h1 id="result" style="color:#24b8eb;"></h1></span>
                 </section>
             </div>
 
@@ -340,9 +156,11 @@
                 theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
                 transition: 'slide',//Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
 
+                /*
                 // Parallax scrolling
-                parallaxBackgroundImage: './img/Ilias_Ismanalijev_kyrgyzstan_nature.jpg',
-                parallaxBackgroundSize: '2478px 1080px',
+                parallaxBackgroundImage: './img/15002364119_29914535f7_o.jpg', // by Ilias Ismanalijev
+                parallaxBackgroundSize: '3000px auto',
+                */
 
                 // Optional libraries used to extend on reveal.js
                 dependencies: [
@@ -355,6 +173,24 @@
                 ]
             });
 
+            var timerh1 = document.getElementById("timer"),
+                timerstart = 0,
+                resulth1 = document.getElementById("result");
+
+            Reveal.addEventListener('slidechanged', function(e){
+                resulth1.innerText = timerh1.innerText;
+                timerh1.innerText = '';
+                timerstart = (new Date).getTime();
+            });
+
+            setInterval(function(){
+                var now = (new Date).getTime(),
+                    diff = now-timerstart,
+                    ms = diff%1000,
+                    s = ((diff-ms)/1000)%60,
+                    m = (diff-s*1000-ms)/(60*1000);
+                timerh1.innerText = Math.floor(m) + ':' + (s<10?'0':'') + Math.floor(s) + '.' + Math.floor(ms/100);
+            }, 100);
         </script>
 
     </body>
