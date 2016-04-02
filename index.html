@@ -111,6 +111,33 @@
 
                 <section>
                     <span><h1 id="timer"></h1></span>
+                    <aside class="notes">
+                        <pre>
+                            mkdir app
+                            cd app
+                            vim index.js
+                            vim Dockerfile
+                            docker build -t ifoo .
+                            docker run --name cfoo -p 8000:8000 -d ifoo
+                            curl localhost:8000
+                            docker stop cfoo
+                            docker rm cfoo
+                            docker rmi $(docker images --filter dangling=true -q) ifoo
+                            cd ..
+                            vim docker-compose.yml
+                            docker-compose up -d
+                            docker-compose logs
+                            !curl
+                            docker-compose down
+                            vim app/index.js
+                            vim docker-compose.yml
+                            docker-compose up -d
+                            docker-compose logs &
+                            !curl
+                            docker-compose down
+                            fg
+                        </pre>
+                    </aside>
                 </section>
 
                 <section data-transition="none">
