@@ -2,24 +2,25 @@ version: "2"
 
 services:
 
+    naxsi:
+        image: jlabusch/docker-naxsi-proxy-waf
+        links:
+            - haproxy
+        ports:
+            - "8000:80"
+
     haproxy:
         image: dockercloud/haproxy:1.2.1
         links:
             - app
-        ports:
-            - "8000:80"
+        expose:
+            - "80"
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
 
-    postgres:
-        image: postgres:9.4
-        expose:
-            - "5132"
-        volumes:
-            - ./db:/docker-entrypoint-initdb.d:ro
-
     app:
         image: docker-demo/app
+        restart: always
         build: ./app
         links:
             - postgres
@@ -27,4 +28,11 @@ services:
             - "8000"
         environment:
             VIRTUAL_HOST: "shark.horse"
+
+    postgres:
+        image: postgres:9.4
+        expose:
+            - "5132"
+        volumes:
+            - ./db:/docker-entrypoint-initdb.d:ro
 

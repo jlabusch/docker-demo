@@ -14,11 +14,13 @@ var greeting = '';
 var client = new pg.Client(conString);
 client.connect(function(err) {
   if(err) {
-    return console.error('could not connect to postgres', err);
+    console.error('could not connect to postgres', err);
+    process.exit(1);
   }
   client.query('SELECT message FROM greetings limit 1', function(err, result) {
     if(err) {
-      return console.error('error running query', err);
+      console.error('error running query', err);
+      process.exit(1);
     }
     greeting = result.rows[0].message;
     client.end();
