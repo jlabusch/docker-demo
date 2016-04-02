@@ -1,2 +1,4 @@
 # docker-demo
-Example of scalable node.js app using HAProxy and docker-compose.
+
+Source accompanying the [10 minute Docker demo](http://jlabusch.github.io/docker-demo/).
+
