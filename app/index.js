@@ -12,7 +12,7 @@ var conString = "postgres://postgres:@postgres/postgres";
 var greeting = '';
 
 var client = new pg.Client(conString);
-client.connect(function(err) {
+client.connect(function load_greeting(err) {
   if(err) {
     console.error('could not connect to postgres', err);
     process.exit(1);
@@ -23,6 +23,10 @@ client.connect(function(err) {
       process.exit(1);
     }
     greeting = result.rows[0].message;
+    if (!greeting){
+        console.log('No greeting, trying again...');
+        setTimeout(load_greeting, 250);
+    }
     client.end();
   });
 });
