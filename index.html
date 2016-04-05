@@ -109,39 +109,102 @@
                 <section data-background="img/target-arch.svg" data-background-size="auto 55%">
                 </section>
 
+                <!--
                 <section>
                     <span><h1 id="timer"></h1></span>
                     <aside class="notes">
                         <pre>
-                            mkdir app
-                            cd app
-                            vim index.js
-                            vim Dockerfile
-                            docker build -t ifoo .
-                            docker run --name cfoo -p 8000:8000 -d ifoo
-                            curl localhost:8000
-                            docker stop cfoo
-                            docker rm cfoo
-                            docker rmi $(docker images --filter dangling=true -q) ifoo
-                            cd ..
-                            vim docker-compose.yml
-                            docker-compose up -d
-                            docker-compose logs
-                            !curl
-                            docker-compose down
-                            vim app/index.js
-                            vim docker-compose.yml
-                            docker-compose up -d
-                            docker-compose logs &
-                            !curl
-                            docker-compose down
-                            fg
+screen C-a S, C-a <tab>, C-a c
+
+mkdir app
+lynx -dump howtonode.org/hello-node | less
+vim app/index.js
++  response.end("Hi, I'm " + process.env.HOSTNAME + "\n");
+
+vim app/Dockerfile
++  FROM node:4.3.0
++  RUN mkdir -p /opt/app
++  WORKDIR /opt/app
++  COPY . /opt/app
++  CMD ["node", "./index.js"]
+
+vim docker-compose.yml
++  version: "2"
++  services:
++      app:
++          image: docker-demo/app
++          build: ./app
++          restart: always
++          ports:
++              - "8000:8000"
+
+UP; curl localhost:8000; DOWN
+
+lynx -dump https://github.com/brianc/node-postgres | less
+vim app/index.js
++  var conString = "postgres://postgres:@postgres/postgres";
++  process.exit(1)
++  "select message from greetings limit 1"
++  setTimeout(getmsg, 250);
++  response.end('' + greeting + process.env.HOSTNAME + "\n");
+
+vim app/Dockerfile
++  cd /opt/app && npm install pg
+
+mkdir -p db
+vim db/setup.sql
++  CREATE TABLE greetings (message TEXT NOT NULL);
++  INSERT INTO  greetings (message) VALUES ('Hello from Postgres');
+
+vim docker-compose.yml
++    app:
++        links:
++            - postgres
++    postgres:
++        image: postgres:9.4
++        expose:
++            - "5132"
++        volumes:
++            - ./db:/docker-entrypoint-initdb.d:ro
+
+UP; curl localhost:8000; DOWN
+
+vim docker-compose.yml
++    haproxy:
++        image: dockercloud/haproxy:1.2.1
++        links:
++            - app
++        ports:
++            - "8000:80"
++        volumes:
++            - /var/run/docker.sock:/var/run/docker.sock
++    app:
++        expose:
++            - "8000"
++        environment:
++            VIRTUAL_HOST: "example.com"
+
+vim docker-compose.yml
++    naxsi:
++        image: jlabusch/docker-naxsi-proxy-waf
++        links:
++            - haproxy
++        ports:
++            - "8000:80"
++    haproxy:
++        expose:
++            - "80"
                         </pre>
                     </aside>
                 </section>
 
                 <section data-transition="none">
                     <span><h1 id="result" style="color:#24b8eb;"></h1></span>
+                </section>
+                -->
+
+                <section>
+                  <script type="text/javascript" src="https://asciinema.org/a/41321.js" id="asciicast-41321" async></script>
                 </section>
             </div>
 
