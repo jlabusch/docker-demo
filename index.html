@@ -68,20 +68,39 @@
                     </tr>
                     </table>
                     <h3 style="margin-top: 10%;" class="catalyst-logo">Catalyst</h3>
-                </section>
-
-                <section data-background="img/large_v-dark-trans.png" data-background-size="auto 75%">
                     <aside class="notes">
                         <ul>
-                          <li>virtualized hardware: good for compatibility, shit for performance.</li>
-                          <li>virtualized OS: more restrictive of compatibility, great for performance.</li>
+                            <li>Docker is not yet a given on production systems
+                            <li>Most examples concentrate either on dev (1 container)
+                                or crazy webscale shit (Google, Netflix)
+                            <li>There's an inbetween space that doesn't get much air time
+                            <li>That's what we're doing today
                         </ul>
-                        System calls get passed through from the guest to the host with very little
-                        interference, while still maintaining good isolation (processes, networks, etc).
-                        <p>
-                        (More about deployments, tar vs apt etc)
                     </aside>
                 </section>
+
+            <section>
+                <section data-background="img/large_v-dark-trans.png" data-background-size="auto 75%">
+                    <aside class="notes">
+                        Anyone <b>not</b> heard of Docker?
+                    </aside>
+                </section>
+
+                <section data-background="img/virt.svg" data-background-size="auto 55%">
+                    <aside class="notes">
+                        virtualized hardware: good for compatibility and security, shit for performance.
+                    </aside>
+                </section>
+
+                <section data-background="img/container.svg" data-background-size="auto 55%">
+                    <aside class="notes">
+                        virtualized OS: more restrictive of compatibility, pretty good for security, great for performance.
+                        <p>
+                        System calls get passed through from the guest to the host with very little
+                        interference, while still maintaining good isolation (namespaces, etc).
+                    </aside>
+                </section>
+            </section>
 
                 <section>
                     <h2 style="">What is</h2>
@@ -91,7 +110,7 @@
                 <section>
                     <h3>1&mdash;2 <span style="color:#24b8eb;">apps</span> <span style="color:#666;">(plus cron jobs)</span></h3>
                     <h3>housed on 1 <span style="color:#24b8eb;">server</span> <span style="color:#666;">(or 1+1)</span></h3>
-                    <h3>with a local <span style="color:#24b8eb;">database</span>.</h3>
+                    <h3>with a dedicated <span style="color:#24b8eb;">database</span>.</h3>
                 </section>
 
                 <section>
@@ -107,6 +126,13 @@
                 </section>
 
                 <section data-background="img/target-arch.svg" data-background-size="auto 55%">
+                    <aside class="notes">
+                        <ul>
+                            <li>Start with trivial web app that does something simple with a database
+                            <li>Put app behind a LB and allow it to scale sideways
+                            <li>Put LB behind a WAF
+                        </ul>
+                    </aside>
                 </section>
 
                 <!--
@@ -119,7 +145,6 @@ screen C-a S, C-a <tab>, C-a c
 mkdir app
 lynx -dump howtonode.org/hello-node | less
 vim app/index.js
-+  response.end("Hi, I'm " + process.env.HOSTNAME + "\n");
 
 vim app/Dockerfile
 +  FROM node:4.3.0
@@ -146,7 +171,7 @@ vim app/index.js
 +  process.exit(1)
 +  "select message from greetings limit 1"
 +  setTimeout(getmsg, 250);
-+  response.end('' + greeting + process.env.HOSTNAME + "\n");
++  response.end('' + greeting + "\n");
 
 vim app/Dockerfile
 +  cd /opt/app && npm install pg
@@ -183,6 +208,9 @@ vim docker-compose.yml
 +            - "8000"
 +        environment:
 +            VIRTUAL_HOST: "example.com"
+
+vim app/index.js
++  response.end('' + greeting + process.env.HOSTNAME + "\n");
 
 vim docker-compose.yml
 +    naxsi:
