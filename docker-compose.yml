@@ -2,14 +2,14 @@ version: "2"
 
 services:
 
-    naxsi:
+    waf:
         image: jlabusch/docker-naxsi-proxy-waf
         links:
-            - haproxy
+            - lb:haproxy
         ports:
             - "8000:80"
 
-    haproxy:
+    lb:
         image: dockercloud/haproxy:1.2.1
         links:
             - app
@@ -23,13 +23,13 @@ services:
         restart: always
         build: ./app
         links:
-            - postgres
+            - db
         expose:
             - "8000"
         environment:
-            VIRTUAL_HOST: "shark.horse"
+            VIRTUAL_HOST: "example.com"
 
-    postgres:
+    db:
         image: postgres:9.4
         expose:
             - "5132"
