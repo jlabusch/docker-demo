@@ -8,6 +8,8 @@ services:
             - lb:haproxy
         ports:
             - "8000:80"
+        security_opt:
+            - "apparmor:docker-nginx-sample"
 
     lb:
         image: dockercloud/haproxy:1.2.1
