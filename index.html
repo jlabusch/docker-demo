@@ -222,6 +222,13 @@ vim docker-compose.yml
 +    haproxy:
 +        expose:
 +            - "80"
+
+curl https://raw.githubusercontent.com/jfrazelle/bane/master/docker-nginx-sample > waf.aa
+sudo apparmor_parser -r -W waf.aa
+sudo apparmor_status
++         security_opt:
++             - "apparmor:docker-nginx-sample"
+
                         </pre>
                     </aside>
                 </section>
@@ -232,7 +239,7 @@ vim docker-compose.yml
                 -->
 
                 <section>
-                  <script type="text/javascript" src="https://asciinema.org/a/41321.js" id="asciicast-41321" async></script>
+                    <iframe width="853" height="480" src="https://www.youtube.com/embed/9-wCtIL-j0E?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
                 </section>
             </div>
 
