@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+
+        <title>10 minute Docker demo</title>
+
+        <meta name="author" content="Jacques Labuschagne">
+
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/catalyst.css" id="theme">
+
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+    </head>
+
+    <body style="overflow:scroll;">
+            <div class="reveal">
+                <table style="max-width:43em;">
+                <tr>
+                    <td style="vertical-align:bottom;text-align:right;">
+                        <h1 style="">Small websites</h1>
+                    </td><td style="vertical-align:bottom;">
+                        <h2 style="color:#24b8eb;">and the 10 minute Docker demo</h2>
+                    </td>
+                </tr>
+                </table>
+
+                <div style="font-weight:300; font-size: 19px; margin: 0% 20% 10% 20%;">
+                    <p>
+                    Let's talk about Docker. And pragmatism. And small sites with small budgets,
+                    weighed down by assets that they can't justify replacing.<br/>
+                    Maybe they're running
+                    on aging bare metal, maybe they've dipped their toes into the cloud with a
+                    lift-and-shift migration that didn't go far enough to fundamentally change their
+                    quality of life.<br/>
+                    Let's talk about the teams who live with the unglamorous grime of real world IT
+                    and its inertia and risk aversion, who nevertheless want to tap into the benifits
+                    of the state of the art in repeatability, isolation and automation.
+                    </p><p>
+                    One thing that makes it hard to talk about Docker is that any conversation
+                    is quickly drawn to one of two poles: <u>Docker 101</u> or <u>How To Borg</u>.
+                    Let's assume for a moment that Docker 101 is behind us; that Docker fundamentals
+                    are understood and judged worthy of further exploration.<br/>
+                    Let's also admit that not everybody needs to be Google, Netflix or Joyent. It's
+                    OK to only have two or three nodes; you can still make your life incrementally
+                    better using containerisation.
+                    </p><p>
+                    In this post we're going to run through an example of how to replicate a standard
+                    small site architecture using Docker.
+                    </p>
+                    <h3>Pre-requisites</h3>
+                    <p>
+                    To get the most out of this I recommend at least reading through a <a href="https://docs.docker.com/linux/">Docker tutorial</a>.
+                    If you want to play along at home, any recent version of Docker should be able to build
+                    the <a href="https://github.com/jlabusch/docker-demo">source code</a> accompanying the article.
+                    I'm using Ubuntu 16.04 and Docker 1.11 in the videos at the end of each section.
+                    </p>
+                    <h3>Target architecture</h3>
+                    <span style="float:right;margin-left:20px;margin-bottom:10px;"><img style="min-width:240px;" src="img/target-arch.svg"></span>
+                    <p>
+                    So what are we building?
+                    </p><p>
+                    Let's imagine a site consisting of a web application and a database, marked App and DB in the diagram.
+                    App runs the application code, which could be Moodle, Drupal, or something else entirely. We're
+                    going to use a <a href="https://howtonode.org/hello-node">"hello world" Node.js example</a>
+                    and graft on a simple <a href="https://github.com/brianc/node-postgres">PostgreSQL query</a>.<br/>
+                    The database stores all of our state; just a "hello world" greeting in our example, but in
+                    the real world this could be product catalogues, inventory, sales orders, user records, session
+                    information, whatever. The salient point is that since all of the state is held outside of the App,
+                    the impact of restarting an App is minimal, and we're
+                    going to add in the assumption that the App is designed in a vaguely concurrency-safe way so that
+                    we can run multiple instances.
+                    </p><p>
+                    Out front we'll add two more layers, a load balancer (LB) and web application firewall (WAF).
+                    In this example the load balancer, HAProxy, will round-robin requests between however many App instances
+                    we have running. Of course, being HAProxy, you could greatly customise that behaviour.<br/>
+                    The WAF role will be filled by Nginx running the OWASP NAXSI module, which can prevent
+                    obvious application level attacks such as SQL injection.<br/>
+                    Finally, as a nod to defense in depth we'll showcase Docker's apparmor support by adding a profile to the WAF
+                    which would further reduce the impact if it were compromised.
+                    </p>
+                    <h3>Application</h3>
+                    <p>
+                    To begin with, let's create an application container that runs the
+                    <a href="https://howtonode.org/hello-node">Hello HTTP</a> example from howtonode.org.
+                    </p>
+                    <script src="https://gist.github.com/jlabusch/b110a0329882163bf9a5842ececcce75.js"></script>
+                    <script type="text/javascript" src="https://asciinema.org/a/47303.js" id="asciicast-47303" async></script>
+                    <h3>Database</h3>
+                    <p>
+                    Now let's add a simple table of greetings: <em>setup.sql</em> defines the schema and
+                    inserts the greeting message. Our Compose file mounts <em>setup.sql</em> as <em>/docker-entrypoint-initdb.d/setup.sql</em>,
+                    which is of <a href="https://hub.docker.com/_/postgres/">special signifigance</a> to the Postgres
+                    container.
+                    </p><p>
+                    To wire up the application, we can make some small alterations to a basic
+                    <a href="https://github.com/brianc/node-postgres">node-postgres example</a> and
+                    update <em>Dockerfile</em> to install the <em>pg</em> module.
+                    </p><p>
+                    Other things to note:
+                    <ul>
+                      <li style="line-height:23px;font-size:19px;">The application can treat the name of the <em>db</em> link as though it were a hostname
+                      for the purpose of the Postgres connection string.
+                      <li style="line-height:23px;font-size:19px;">The process exits on error, rather than trying to recover, and is resurrected because
+                      we have <em>restart: always</em> in <em>docker-compose.yml</em>.
+                      <li style="line-height:23px;font-size:19px;">The app binds to host port 8000, but the DB only <em>exposes</em> its port
+                      to other containers on the same docker network; it's reachable from linked containers, but not from
+                      external hosts.
+                      <li style="line-height:23px;font-size:19px;">We haven't given Postgres an external data volume, so everything will be lost when the container is removed. OK for an example, but not the real world.
+                    </ul>
+                    </p>
+                    <script src="https://gist.github.com/jlabusch/ea72d1560c80e769680ec1479135448c.js"></script>
+                    <script type="text/javascript" src="https://asciinema.org/a/f2657btrt278btpbemjaaz5k0.js" id="asciicast-f2657btrt278btpbemjaaz5k0" async></script>
+                    <h3>Load Balancer</h3>
+                    <p>
+                    The next layer is important not just as a way to distribute load across multiple cores on
+                    your host and improve the general resilience, but as a key step on the road to zero-downtime
+                    deployments.<br/>
+                    Docker's own <a href="https://github.com/docker/dockercloud-haproxy">dockercloud/haproxy</a>
+                    provides an HAProxy container which knows how to listen for Docker engine events
+                    and add or remove hosts from the pool.
+                    </p><p>
+                    There are two noteworthy parts below:
+                    <ul>
+                      <li style="line-height:23px;font-size:19px;">We're sharing the Docker control socket between
+                      the host and HAProxy. This has some security implications, and any compromise of the HAProxy
+                      container would be very bad news.
+                      <li style="line-height:23px;font-size:19px;">This HAProxy determines which service to route
+                      traffic to by matching the HTTP Host header against the VIRTUAL_HOST environment variable
+                      specified in service containers. This makes running multiple sites behind the same HAProxy
+                      instance fairly easy.
+                    </ul>
+                    </p>
+                    <script src="https://gist.github.com/jlabusch/da54cbfde022831db7ec313f8e6b1011.js"></script>
+                    <script type="text/javascript" src="https://asciinema.org/a/7zv8kzb1yn2tmr89vhlrthdtb.js" id="asciicast-7zv8kzb1yn2tmr89vhlrthdtb" async></script>
+                    <p>
+                    As we increase the number of instances using the <em>scale</em> command HAProxy
+                    automatically reconfigures itself to take the new containers into account.<br/>
+                    For seamless deployments you can pull a new application image, scale out
+                    (with new instances using the updated image), and then stop/remove the old instances
+                    when you're happy that things are working as intended.
+                    </p>
+                    <h3>Web Application Firewall</h3>
+                    <p>
+                    The WAF role is often taken by the CDN itself: CloudFlare and Akamai both provide managed
+                    services that can do this for as little as $20 USD/month, and in an emergency they can
+                    provide DDoS protection as well. Being able to add custom rules usually entails
+                    a more expensive plan, but is nevertheless an option worth considering.
+                    </p><p>
+                    However, if you want to do it yourself, here's a starting point.
+                    </p>
+                    <script src="https://gist.github.com/jlabusch/886402b66b451c992bfa11c34bc5f73b.js"></script>
+                    <script type="text/javascript" src="https://asciinema.org/a/dku85ubccs2nmze5568b25vom.js" id="asciicast-dku85ubccs2nmze5568b25vom" async></script>
+                    <p>
+                    When we throw a suspicious string like <em>"select * from"</em> onto our query NAXSI
+                    steps in and blocks the request before it gets to the next layer, returning
+                    an HTTP 418 instead.
+                    </p><p>
+                    Finally, let's add in Jess Frazelle's <a href="https://raw.githubusercontent.com/jfrazelle/bane/master/docker-nginx-sample">Nginx AppArmor profile example</a>
+                    from Bane, the AppArmor profile generator.
+                    </p>
+                    <script src="https://gist.github.com/jlabusch/0cb3ef42e0e0cf5c4a8ace9f3d01c41d.js"></script>
+                    <script type="text/javascript" src="https://asciinema.org/a/45bhrzrhw4zfh9l66mwfu5ubo.js" id="asciicast-45bhrzrhw4zfh9l66mwfu5ubo" async></script>
+                    <p>
+                    Forms of mandatory access control like seccomp and AppArmor fit the theme of defense in
+                    depth, and can do a great deal to limit the impact of a compromised front-line container.
+                    They won't prevent attacks on downstream systems via already-connected protocols (like HTTP
+                    in this case), but they can certainly make it harder for intruders to escape containment.<br/>
+                    If your previous point of reference was running all of these layers side-by-side on one
+                    bare metal host, then this is a massive leap forward in risk reduction.
+                    </p>
+                    <h3>Conclusion</h3>
+                    <p>
+                    Getting the most out of new tools may require a significant shift in
+                    thinking. However, getting <em>some</em> value out of new tools can often be
+                    quite easy.<br/>
+                    Just start. Experiment. Run hybrid mixes of technologies if you have to,
+                    and change course if you don't get tangible value out the other end.<br/>
+                    Tools that suit one team may not work for another, and that's OK.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
