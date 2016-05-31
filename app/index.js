@@ -4,14 +4,11 @@
 
 // Load the http module to create an http server.
 var http = require('http');
-
 var pg = require('pg');
-
 var conString = "postgres://postgres:@db/postgres";
-
 var greeting = '';
-
 var client = new pg.Client(conString);
+
 client.connect(function load_greeting(err) {
   if(err) {
     console.error('could not connect to postgres', err);
@@ -26,6 +23,7 @@ client.connect(function load_greeting(err) {
     if (!greeting){
         console.log('No greeting, trying again...');
         setTimeout(load_greeting, 250);
+        return;
     }
     client.end();
   });
